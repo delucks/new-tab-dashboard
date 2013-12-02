@@ -1,5 +1,7 @@
 body {
-  background : #223333;
+  background : #ffffff;
+  background : radial-gradient(ellipse at center, #ffffff 0%, #eee 100%);
+  background : -moz-radial-gradient(#eee, #fff);
 }
 .keepcentered {
   width : 640px;
@@ -10,17 +12,13 @@ body {
   font-weight : 100;
 }
 body {
-  font-family: 'Electrolize', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-style : normal;
-  /*color: #d75f5f;*/
-  color : #dd7755;
+  color : #d64937; // Change this to change the color of the colored font on the page.
   margin : 5px;
 }
 input, textarea, select {
-  background-color: #223333;
-  border: 1px solid #dd7755;
-  color : #dd7755;
-  font-family: 'Electrolize', sans-serif;
+  border: 1px solid #d64937;
   padding: 10px;
 }
 td, tr {
@@ -36,9 +34,8 @@ table input {
   width: 100%;
 }
 a {
-  font-family: 'Roboto', sans-serif;
   font-weight: 100;
-  color : #ccc;
+  color : #999;
 }
 a:hover{
   color: #eee;
@@ -58,4 +55,4 @@ div.toolbar {
   right: 0;
   padding: 10px;
 }
-textarea#noteText {height: 125px; width: 300px;}
+textarea#noteText {height: 75px; width: 200px;}

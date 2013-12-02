@@ -37,57 +37,14 @@
   function bindNoteHandlers() {
     var elem = document.getElementById('noteText'),
         saveHandler = _makeDelayed();
-    function save() {
-      chrome.storage.sync.set({'noteText': elem.value});
-    }
     // Throttle save so that it only occurs after 1 second without a keypress.
     elem.addEventListener('keypress', function() {
-      saveHandler(save, 1000);
+      saveHandler(function() {
+        chrome.storage.sync.set({'noteText': elem.value});
+      }, 1000);
     });
-    elem.addEventListener('blur', save);
     chrome.storage.sync.get('noteText', function(data) {
       elem.value = data.noteText ? data.noteText : '';
-    });
-  }
-
-  function searchHistory() {
-    // Only look at the past 7 days.
-    var cutoff = new Date().getTime() - (1000 * 60 * 60 * 24 * 7),
-        elem = document.getElementById('historyText'),
-        parts = elem.value.split(' '),
-        regex = new RegExp(parts.join('.*[\/\.].*')),
-        urls = [];
-
-    // Search for all history.
-    chrome.history.search({
-      'text': '',
-      'maxResults': 500, 
-      'startTime': cutoff
-    }, function(items) {
-      for (var i = 0; i < items.length; i++) {
-        if (items[i].url.match(regex)) {
-          urls.push([items[i].lastVisit, items[i].url]);
-        }
-      }
-      if (urls.length) {
-        elem.value = urls[0][1];
-      }
-    });
-  }
-
-  function bindHistory() {
-    var elem = document.getElementById('historyText'),
-        searchHandler = _makeDelayed();
-
-    elem.addEventListener('keypress', function(e) {
-      if (e.keyCode == 13 && elem.value) {
-        window.location.href = elem.value;
-      } else if (e.keyCode == 35) {
-        e.preventDefault();
-        elem.value = '';
-      } else {
-        searchHandler(searchHistory, 1200);
-      }
     });
   }
 
@@ -177,26 +134,24 @@
   }
 
   addSearch('search', function(s) {
-    window.location.href = 'https://www.google.com/#q=' + s;
+    window.location.href = 'http://www.duckduckgoog.com?q=' + s;
   });
   addSearch('subreddit', function(s) {
     window.location.href = 'http://www.reddit.com/r/' + s;
   });
-  addSearch('issue', function(s) {
-    window.location.href = 'https://github.counsyl.com/dev/website/issues/' + s;
+  addSearch('spotify', function(s) {
+    window.location.href = 'https://play.spotify.com/search/' + s;
   });
-  addSearch('weather', function(s) {
-    window.location.href = 'http://www.wunderground.com/cgi-bin/findweather/getForecast?query=' + s;
+  addSearch('dining', function(s) {
+    window.location.href = 'http://compuweb.facilities.udel.edu:8080/?sid=' + s;
   });
-  addSearch('testp', function(s) {
-    window.location.href = 'https://testp-' + s + '.counsyl.com/helpdesk/';
+  addSearch('youtube', function(s) {
+    window.location.href = 'http://www.youtube.com/results?search_query=' +s;
   });
-  addSearch('djangome', function(s) {
-    window.location.href = 'http://django.me/' + s;
+  addSearch('wallbase', function(s) {
+    window.location.href = 'http://wallbase.cc/search?q=' + s;
   });
-
   updateClock();
   bindNoteHandlers();
-  bindHistory();
   loadBookmarks(bookmarkFolder);
 })('Favorites', false);
