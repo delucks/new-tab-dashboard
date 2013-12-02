@@ -1,0 +1,20 @@
+{
+   "description": "Custom Theme from delucks",
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDMpQ1Wi4jLXlmBe+34CT9H4/c1zMdu78RDR3+D6eYOj3LmKvxaepG++ryFCGMtQTDD4hLR9lHHz0GdykQ1JNfJZ6EyXA0euZxh9ljQBZMASELdcMGxOwlIZmoLoJeNBqGYL37VncjEVdy95HJL1P9IB1nbhToeEuNOAUl25wB3mQIDAQAB",
+   "manifest_version": 2,
+   "name": "CustomDark",
+   "theme": {
+      "colors": {
+         "bookmark_text": [ 0, 0, 0 ],
+         "frame": [ 134, 51, 51 ],
+         "ntp_background": [ 0, 0, 1 ],
+         "ntp_link": [ 0, 0, 0 ],
+         "ntp_link_underline": [ 0, 0, 0 ],
+         "ntp_text": [ 0, 0, 0 ],
+         "tab_background_text": [ 255, 255, 255 ],
+         "tab_text": [ 0, 0, 0 ],
+         "toolbar": [ 221, 119, 85, 0.6 ]
+      }
+   },
+   "version": "1.0"
+}
