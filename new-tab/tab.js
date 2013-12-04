@@ -142,9 +142,12 @@
   addSearch('spotify', function(s) {
     window.location.href = 'https://play.spotify.com/search/' + s;
   });
-  addSearch('dining', function(s) {
-    window.location.href = 'http://compuweb.facilities.udel.edu:8080/?sid=' + s;
-  });
+ // addSearch('dining', function(s) {
+  //  window.location.href = 'http://compuweb.facilities.udel.edu:8080/?sid=' + s;
+ // });
+	addSearch('explainshell', function(s) {
+		window.location.href = 'http://explainshell.com/explain?cmd=' + s;
+	});
   addSearch('youtube', function(s) {
     window.location.href = 'http://www.youtube.com/results?search_query=' +s;
   });
