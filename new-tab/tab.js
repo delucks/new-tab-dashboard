@@ -1,4 +1,4 @@
-(function(bookmarkFolder, displayFavicons) {
+ (function(bookmarkFolder, displayFavicons) {
   function updateClock() {
     Date.getMinutesTwoDigits = function() {
       var retval = now.getMinutes();

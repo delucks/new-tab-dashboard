@@ -13,14 +13,14 @@ body {
 body {
   font-family: 'Electrolize', sans-serif;
   font-style : normal;
-  color : #3377bb;
+  color : #ffe755;
   margin : 5px;
 }
 input, textarea, select {
   /*background-color: #262626;*/
 	background-color: transparent;
-  border: 1px solid #3377bb;
-  color : #3377bb;
+  border: 1px solid #ffe755;
+  color : #ffe755;
   font-family: 'Electrolize', sans-serif;
   padding: 10px;
 }
