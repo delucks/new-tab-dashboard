@@ -148,8 +148,8 @@
 	addSearch('explainshell', function(s) {
 		window.location.href = 'http://explainshell.com/explain?cmd=' + s;
 	});
-  addSearch('youtube', function(s) {
-    window.location.href = 'http://www.youtube.com/results?search_query=' +s;
+  addSearch('plex', function(s) {
+    window.location.href = 'http://plex.tv/web/app#!/search/' +s;
   });
   addSearch('wallbase', function(s) {
     window.location.href = 'http://wallbase.cc/search?q=' + s;

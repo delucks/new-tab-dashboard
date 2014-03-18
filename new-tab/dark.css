@@ -1,10 +1,10 @@
 body {
   /*background : #262626;*/
-	background: url(images/cover70.png) 100%,url(images/bg.jpg) 100%;
+	background: url(images/cover70.png) 100%,url(images/bg.jpg) 50%;
 }
 .keepcentered {
-  width : 900px;
-  height : 300px;
+  width : 1000px;
+  height : 400px;
   margin-left : auto;
   margin-right : auto;
   margin-top: 200px;
@@ -13,14 +13,14 @@ body {
 body {
   font-family: 'Electrolize', sans-serif;
   font-style : normal;
-  color : #ffe755;
+  color : #aadb0f;
   margin : 5px;
 }
 input, textarea, select {
   /*background-color: #262626;*/
 	background-color: transparent;
-  border: 1px solid #ffe755;
-  color : #ffe755;
+  border: 1px solid #aadb0f;
+  color : #aadb0f;
   font-family: 'Electrolize', sans-serif;
   padding: 10px;
 }
@@ -39,7 +39,7 @@ table input {
 a {
   font-family: 'Roboto', sans-serif;
   font-weight: 100;
-  color : #ccc;
+  color : #ffffff;
 }
 a:hover{
   color: #eee;
