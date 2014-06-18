@@ -12,7 +12,8 @@
       return retval;
     }
     var now = new Date(),
-        time = Date.getHoursModTwelve() + ':' + Date.getMinutesTwoDigits();
+        time = now.getHours() + ':' + Date.getMinutesTwoDigits();
+				//time = Date.getHoursModTwelve() + ':' + Date.getMinutesTwoDigits();
     document.getElementById('time').innerHTML = ["", time].join('');
     setTimeout(updateClock, 1000);
   }

@@ -1,6 +1,7 @@
 body {
   /*background : #262626;*/
-	background: url(images/cover70.png) 100%,url(images/bg.jpg) 50%;
+	background: url(images/bg.png);
+	/*background: url(images/cover70.png) 100%,url(images/bg.png);*/
 }
 .keepcentered {
   width : 1000px;
@@ -13,14 +14,14 @@ body {
 body {
   font-family: 'Electrolize', sans-serif;
   font-style : normal;
-  color : #aadb0f;
+  color : #8c5b3e;
   margin : 5px;
 }
 input, textarea, select {
   /*background-color: #262626;*/
 	background-color: transparent;
-  border: 1px solid #aadb0f;
-  color : #aadb0f;
+  border: 1px solid #8c5b3e;
+  color : #8c5b3e;
   font-family: 'Electrolize', sans-serif;
   padding: 10px;
 }
