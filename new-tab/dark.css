@@ -26,11 +26,11 @@ input, textarea, select {
   padding: 10px;
 }
 td, tr {
-  width: 20%;
+  width: 15%;
   text-align: center;
 }
 th {
-  width: 20%;
+  width: 15%;
   font-weight: normal;
   text-align: center;
 }
@@ -39,7 +39,7 @@ table input {
 }
 a {
   font-family: 'Roboto', sans-serif;
-  font-weight: 100;
+  /*font-weight: 100;*/
   color : #ffffff;
 }
 a:hover{
