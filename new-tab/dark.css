@@ -1,63 +1,81 @@
 body {
-  /*background : #262626;*/
-	background: url(images/bg.png);
-	/*background: url(images/cover70.png) 100%,url(images/bg.png);*/
+  /*background : #111111;*/
+	overflow: hidden;
+	background: url(images/cover70.png) 100%,url(images/bg.jpg);
 }
 .keepcentered {
-  width : 1000px;
-  height : 400px;
-  margin-left : auto;
+  width : 75%;
+  height : 50%;
+  margin-left : 10%;
   margin-right : auto;
-  margin-top: 200px;
+  margin-top: 50px;
   font-weight : 100;
 }
 body {
   font-family: 'Electrolize', sans-serif;
   font-style : normal;
-  color : #8c5b3e;
+  color : #af865a;
   margin : 5px;
 }
-input, textarea, select {
-  /*background-color: #262626;*/
-	background-color: transparent;
-  border: 1px solid #8c5b3e;
-  color : #8c5b3e;
-  font-family: 'Electrolize', sans-serif;
-  padding: 10px;
+div:hover {
 }
-td, tr {
+input, textarea, select {
+	height: 30px;
+	font-size: 16px;
+	background-color: transparent;
+  border: 2px solid #8c5b3e;
+  color: #8c5b3e;
+	overflow: hidden;
+  font-family: 'Electrolize', sans-serif;
+	text-align: left;
+	padding-left: 10px;
+}
+td, tr ,th{
   width: 15%;
-  text-align: center;
+	text-align: center;
+	border-radius: 0px;
+	border-padding: 0px;
+	margin-left: 0px;
+	margin-top: 0px;
 }
 th {
-  width: 15%;
-  font-weight: normal;
-  text-align: center;
-}
-table input {
-  width: 100%;
+  font-weight: bold;
 }
 a {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Electrolize', sans-serif;
   /*font-weight: 100;*/
-  color : #ffffff;
+  color : #a8e9ca;
 }
 a:hover{
-  color: #eee;
+  color: #fff;
 }
 a:link {
   text-decoration : none;
   text-shadow: 0px 0px 0px #000;
 }
-input#search {
-  width: 100%;
-  font-size: 18px;
+div.wrapper {
+	width:100%;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
 }
-div#time { font-size: 72px; }
-div.toolbar { 
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 10px;
+div.inputs {
+	text-align: center;
+  color : #a8e9ca;
+	font-size:32px;
+  font-family: 'Electrolize', sans-serif;
 }
-textarea#noteText {height: 125px; width: 300px;}
+::-webkit-input-placeholder {
+	color: #a8e9ca;
+}
+div#time { 
+	font-size: 96px;
+	text-align: center;
+}
+textarea#noteText {
+	margin-top: 10px;
+	height: 40%; width: 75%;
+	margin-right: auto;
+	float: center;
+  font-family: 'Electrolize', sans-serif;
+}

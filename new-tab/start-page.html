@@ -7,27 +7,24 @@
 </head>
 
 <body>
-<div class="toolbar">
-  <textarea id="noteText"></textarea>
-</div>
-<div class="keepcentered">
-  <center><div id="time"></div></center>
-  <p>
-    <table id="bookmarks" width="100%" border="0px">
-    </table>
-    <br>
-    <input id="search" placeholder="search" type="text" />
-    <br>
-    <table width="100%" border="0px">
-      <tr>
-        <td><input id="subreddit" placeholder="subreddit" type="text" /></td>
-        <td><input id="spotify" placeholder="spotify" type="text" /></td>
-        <td><input id="plex" placeholder="plex" type="text" /></td>
-        <td><input id="wallbase" placeholder="wallpapers" type="text" /></td>
-        <td><input id="explainshell" placeholder="explain shell" type="text" /></td>
-      </tr>
-    </table>
-  </p>
+<div class="wrapper">
+	<div class="keepcentered">
+		<div id="time"></div>
+		<p>
+			<table id="bookmarks" width="100%" >
+			</table>
+			<br>
+			<div class="inputs">
+				<input id="search" placeholder="search" type="text" />
+				<input id="subreddit" placeholder="subreddit" type="text" />
+				<input id="spotify" placeholder="spotify" type="text" />
+				<input id="plex" placeholder="plex" type="text" />
+				<input id="wallbase" placeholder="wallpapers" type="text" />
+				<input id="explainshell" placeholder="explain shell" type="text" />
+				<textarea id="noteText" placeholder="notes"></textarea>
+			</div>
+		</p>
+	</div>
 </div>
 </body>
 <script src="tab.js"></script>
