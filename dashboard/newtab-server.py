@@ -4,6 +4,7 @@ import platform
 import threading
 import urllib2
 import sqlite3
+import time
 app = Flask(__name__)
 
 HALT_EVENT = threading.Event()
@@ -21,6 +22,7 @@ design
 poll proc every few seconds, put information into a DB w/ timestamp
     frontend is a separate thread/process that renders the app
     queries the DB through JS for information
+    need to periodically remove entries older than a day or so from the DB
 '''
 
 '''
@@ -64,7 +66,7 @@ def proc_load():
     logging.info('utility,proc_load')
     with open('/proc/loadavg', 'r') as info:
         data = info.read().split()
-        return {1: data[0], 5: data[1], 15: data[2]}
+        return {'1': data[0], '5': data[1], '15': data[2]}
 
 # read some memory stats from proc. all numbers are in kilobytes
 def proc_mem():
@@ -99,28 +101,34 @@ def init_db(schemaname='newtab-schema.sql',
     logging.info('database,init_db')
     db_conn = sqlite3.connect(dbname)
     cur = db_conn.cursor()
-    cur.executescript(schemaname)
+    with open(schemaname, 'r') as f:
+        cur.executescript(f.read())
     db_conn.close()
 
 # worker thread which collects statistics every five minutes
-def db_worker(db_conn):
-    cur = db_conn.cursor()
+def db_worker():
+    dbname='newtab-db.sqlite3'
     while not HALT_EVENT.is_set():
         memstats = proc_mem()
         load = proc_load()
-        time = None
-        # TODO: time = time.blah, put it into a sqlite TIME struct
-        cur.execute("INSERT INTO Stats values('{t}','{l1}','{l5}','{l15}','{mT}','{mB}','{mF}','{mC}','{mS}','{mA}')".format(t=time,
-            l1=load['load1'],
-            l5=load['load5'],
-            l15=load['load15'],
+        timestamp = None
+        # TODO: timestamp = timestamp.blah, put it into a sqlite timestamp struct
+        db_conn = sqlite3.connect(dbname)
+        cur = db_conn.cursor()
+        logging.info('Periodic update')
+        cur.execute("INSERT INTO Stats values('{t}','{l1}','{l5}','{l15}','{mT}','{mB}','{mF}','{mC}','{mS}','{mA}')".format(t=timestamp,
+            l1=load['1'],
+            l5=load['5'],
+            l15=load['15'],
             mT=memstats['total'],
             mB=memstats['buffers'],
             mF=memstats['free'],
             mC=memstats['cache'],
             mS=memstats['swap'],
-            mA=memstats['active'])
-        sleep(60)
+            mA=memstats['active']))
+        cur.close()
+        db_conn.close()
+        time.sleep(60)
 
 '''
 application logic
@@ -128,16 +136,12 @@ application logic
 
 @app.route('/')
 def render_dashboard():
-    pass
+    return render_template('index.html')
 
 if (__name__ == '__main__'):
-    app_args = {
-            'host': '127.0.0.1',
-            'debug': True
-            }
-    # so far this works, but 
-    # TODO: figure out why reloading the file kills the subprocess
-    #app_proc = multiprocessing.Process(target=app.run, kwargs=app_args)
-    #app_proc.start()
-    app.run(host='127.0.0.1', debug=True) # this blocks
+    init_db()
+    logging.basicConfig(level=logging.INFO, filename='debug.log')
+    worker = threading.Thread(target=db_worker)
+    worker.start()
+    app.run(host='127.0.0.1', debug=True, port=9001) # this blocks
     HALT_EVENT.set()
