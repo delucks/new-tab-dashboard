@@ -134,6 +134,11 @@ def db_worker():
 application logic
 '''
 
+'''
+this method renders a template of graphs without data
+to include data queried from the sqlite3 database
+using chart.js and skeleton.css for frontend
+'''
 @app.route('/')
 def render_dashboard():
     return render_template('index.html')

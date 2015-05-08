@@ -2,13 +2,3 @@ html {
 	font-size: 0.7rem;
   overflow: hidden;
 }
-.container {
-  position: relative;
-}
-.row {
-  height: 100%
-}
-.vcentered {
-  top: 40%;
-  position: relative;
-}

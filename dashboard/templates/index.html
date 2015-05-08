@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>New Tab</title>
+  <meta name="description" content="New Tab page">
+  <meta name="author" content="delucks">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='skeleton.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
+  <script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='render-charts.js') }}"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="row" style="text-align: center;">
+      <div class="six columns">
+        <canvas id="lineChart" width="400" height="400"></canvas>
+      </div>
+      <div class="six columns">
+        <canvas class="lineChart" width="400" height="400"></canvas>
+      </div>
+    </div>
+  </div> <!-- /container -->
+</body>
+</html>
