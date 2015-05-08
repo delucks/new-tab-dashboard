@@ -1,4 +1,4 @@
-new-tab
-=======
+new-tab-dashboard
+=================
 
-My custom newtab page, forked from coleifer's excellent modification of iFargle's extension.
+My custom new tab page for $BROWSER. Uses python with flask to render a page with JS graphs of system load and other things.
