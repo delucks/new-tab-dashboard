@@ -8,14 +8,14 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='skeleton.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
-  <script src="{{ url_for('static', filename='Chart.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='render-charts.js') }}"></script>
+  <script src="http://www.google.com/jsapi"></script>
+  <script src="ck/static/chartkick.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="row" style="text-align: center;">
       <div class="six columns">
-        <canvas id="lineChart" width="400" height="400"></canvas>
+        {% pie_chart data %}
       </div>
       <div class="six columns">
         <canvas class="lineChart" width="400" height="400"></canvas>

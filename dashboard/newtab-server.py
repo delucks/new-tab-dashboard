@@ -1,11 +1,15 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Blueprint
 import logging
-import platform
 import threading
 import urllib2
 import sqlite3
 import time
+import chartkick
 app = Flask(__name__)
+
+ck = Blueprint('ck_page', __name__, static_folder=chartkick.js(), static_url_path='/static')
+app.register_blueprint(ck, url_prefix='/ck')
+app.jinja_env.add_extension("chartkick.ext.charts")
 
 HALT_EVENT = threading.Event()
 
@@ -111,13 +115,10 @@ def db_worker():
     while not HALT_EVENT.is_set():
         memstats = proc_mem()
         load = proc_load()
-        timestamp = None
-        # TODO: timestamp = timestamp.blah, put it into a sqlite timestamp struct
         db_conn = sqlite3.connect(dbname)
         cur = db_conn.cursor()
         logging.info('Periodic update')
-        cur.execute("INSERT INTO Stats values('{t}','{l1}','{l5}','{l15}','{mT}','{mB}','{mF}','{mC}','{mS}','{mA}')".format(t=timestamp,
-            l1=load['1'],
+        cur.execute("INSERT INTO Stats values('{l1}','{l5}','{l15}','{mT}','{mB}','{mF}','{mC}','{mS}','{mA}',datetime('now'))".format(l1=load['1'],
             l5=load['5'],
             l15=load['15'],
             mT=memstats['total'],
@@ -141,7 +142,7 @@ using chart.js and skeleton.css for frontend
 '''
 @app.route('/')
 def render_dashboard():
-    return render_template('index.html')
+    return render_template('index.html', data={'Foo':5, 'Bar': 10, 'Baz': 12})
 
 if (__name__ == '__main__'):
     init_db()
