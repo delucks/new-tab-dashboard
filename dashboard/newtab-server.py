@@ -129,7 +129,7 @@ def db_worker():
             mA=memstats['active']))
         cur.close()
         db_conn.close()
-        time.sleep(60)
+        #time.sleep(60)
 
 '''
 application logic
@@ -145,9 +145,21 @@ def render_dashboard():
     return render_template('index.html', data={'Foo':5, 'Bar': 10, 'Baz': 12})
 
 if (__name__ == '__main__'):
+    import argparse
+    p = argparse.ArgumentParser(description='run the server with different behavior')
+    p.add_argument('-t', '--test-db', help='verbosely output data into a db file')
+    p.add_argument('-a', '--app-only', help='only run the flask app, don\'t spawn the db_worker thread', action='store_true')
+    p.add_argument('-h', '--bind-host', help='set the host to run on', default='127.0.0.1')
+    p.add_argument('-p', '--port', help='set the port to run on', type=int, default=9001)
+    args = p.parse_args()
     init_db()
     logging.basicConfig(level=logging.INFO, filename='debug.log')
-    worker = threading.Thread(target=db_worker)
-    worker.start()
-    app.run(host='127.0.0.1', debug=True, port=9001) # this blocks
-    HALT_EVENT.set()
+    if args.test_db:
+        db_worker()
+        HALT_EVENT.set()
+    elif args.app_only:
+        app.run(host=args.bind_host, debug=True, port=args.port)
+    else:
+        worker = threading.Thread(target=db_worker)
+        worker.start()
+        app.run(host=args.bind_host, debug=True, port=args.port) # this blocks
