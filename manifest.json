@@ -1,0 +1,9 @@
+{
+  "name": "delucks new tab page",
+  "description": "display info from machine in new-tab page",
+  "version": "0.1",
+  "incognito": "split",
+  "chrome_url_overrides": {"newtab": "index.html"},
+  "permissions": [],
+  "manifest_version": 2
+}
