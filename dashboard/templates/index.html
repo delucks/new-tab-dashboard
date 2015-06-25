@@ -14,66 +14,42 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="six columns">
-        <div class="album-art">
-          <img class="album-art" src="{{ music[3] }}"/>
-        </div>
-        <div class="title-wrapper">
-          <h4 class="title">Now Playing</h4>
-        </div>
-          <table>
-            <tr>
-              <td>Artist</td>
-              <td>{{ music[0] }}</td>
-            </tr>
-            <tr>
-              <td>Album</td>
-              <td>{{ music[1] }}</td>
-            </tr>
-            <tr>
-              <td>Song</td>
-              <td>{{ music[2] }}</td>
-            </tr>
-          </table>
-      </div>
-    </div>
+      <h1>Welcome {{ user }}</h1>
+      <h4>You're using your "{{ host }}" deck. On pageload, it was {{ time }}</h4>
+      <h4>Current load avg: {{ overview }}</h4>
     <div class="row">
       <div class="six columns">
         <div class="title-wrapper">
           <h4 class="title">Memory Average</h4>
         </div>
-        {% pie_chart mem_data with id="mem" height="300px" library=settings %}
+        {% pie_chart mem_data with id="mem" height="250px" library=settings %}
       </div>
       <div class="six columns">
         <div class="title-wrapper">
-          <h4 class="title">CPU Information</h4>
+          <h4 class="title">Links</h4>
         </div>
-          <table>
-            <tr>
-              <th>Statistic</th>
-              <th>Value</th>
-            </tr>
-            <tr>
-              <td>Model</td>
-              <td>{{ cpu_info.model }}</td>
-            </tr>
-            <tr>
-              <td>BogoMIPS</td>
-              <td>{{ cpu_info.speed }} MIPS</td>
-            </tr>
-            <tr>
-              <td>Processor Count</td>
-              <td>{{ cpu_info.proc_count }} cores</td>
-            </tr>
-            <tr>
-              <td>Cache Size</td>
-              <td>{{ cpu_info.cache }}/core</td>
-            </tr>
-            <tr>
-              <td>Address Sizes</td>
-              <td>{{ cpu_info.address }}</td>
-            </tr>
-          </table>
+        <table class="link-nav" style="margin: 0 auto;">
+          <tr>
+            <td><a class="button" href="https://mail.google.com">gmail</a></td>
+            <td><a class="button" href="https://trello.com/b/NOAwkt50/work">trello</a></td>
+          </tr>
+          <tr>
+            <td><a class="button" href="https://lobste.rs">lobste.rs</a></td>
+            <td><a class="button" href="https://news.ycombinator.com">hacker news</a></td>
+          </tr>
+          <tr>
+            <td><a class="button" href="https://www.reddit.com/me/m/foo">reddit/foo</a></td>
+            <td><a class="button" href="https://www.reddit.com/me/m/dumb_and_funny">reddit/funny</a></td>
+          </tr>
+          <tr>
+            <td><a class="button" href="https://172.16.12.138:9392/login/login.html">gsad</a></td>
+            <td><a class="button" href="http://192.168.1.100">kibana</a></td>
+          </tr>
+          <tr>
+            <td><a class="button" href="https://svbtle.com">svbtle</a></td>
+            <td><a class="button" href="http://www.wunderground.com/cgi-bin/findweather/getForecast?query=19711">wunderground</a></td>
+          </tr>
+        </table>
       </div>
     </div>
     <div class="row">
@@ -81,7 +57,76 @@
         <div class="title-wrapper">
           <h4 class="title">Load Average</h4>
         </div>
-        {% area_chart load_data with height="500px" id="load" library=settings %}
+        {% area_chart load_data with height="200px" id="load" library=settings %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="six columns">
+        <div class="album-art">
+          <img class="album-art" src="{{ music[3] }}"/>
+        </div>
+        <div class="title-wrapper">
+          <h4 class="title">Now Playing</h4>
+        </div>
+          <table class="underlined">
+            <colgroup>
+              <col span="1" style="width: 30%">
+              <col span="1" style="width: 70%">
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>Artist</td>
+                <td>{{ music[2] }}</td>
+              </tr>
+              <tr>
+                <td>Album</td>
+                <td>{{ music[0] }}</td>
+              </tr>
+              <tr>
+                <td>Song</td>
+                <td>{{ music[1] }}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <div class="six columns">
+        <div class="title-wrapper">
+          <h4 class="title">CPU Information</h4>
+        </div>
+          <table class="underlined">
+            <colgroup>
+              <col span="1" style="width: 30%">
+              <col span="1" style="width: 70%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Statistic</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Model</td>
+                <td>{{ cpu_info.model }}</td>
+              </tr>
+              <tr>
+                <td>BogoMIPS</td>
+                <td>{{ cpu_info.speed }} MIPS</td>
+              </tr>
+              <tr>
+                <td>Processor Count</td>
+                <td>{{ cpu_info.proc_count }} cores</td>
+              </tr>
+              <tr>
+                <td>Cache Size</td>
+                <td>{{ cpu_info.cache }}/core</td>
+              </tr>
+              <tr>
+                <td>Address Sizes</td>
+                <td>{{ cpu_info.address }}</td>
+              </tr>
+            </tbody>
+          </table>
       </div>
     </div>
   </div> <!-- /container -->

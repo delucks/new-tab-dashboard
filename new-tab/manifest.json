@@ -5,5 +5,5 @@
   "incognito": "split",
   "chrome_url_overrides": {"newtab": "start-page.html"},
   "permissions": ["bookmarks", "storage"],
-  "manifest_version": 2
+  "manifest_version": 3
 }

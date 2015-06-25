@@ -1,13 +1,17 @@
 html {
-	font-size: 0.7rem;
   background: #111;
 }
 div.container {
-  padding-top: 30px;
   width: 90%;
 }
 body {
   font-family: 'Share Tech Mono', monospace !important;
+}
+h1 {
+  color: #ddd;
+}
+b {
+  color: #ddd;
 }
 h4 {
   font-size: 1.2em;
@@ -30,17 +34,28 @@ div.title-wrapper {
 table {
   color: #ddd;
   border-spacing: 2px;
+  word-break: break-word;
+  table-layout: fixed;
+}
+table.underlined {
   border-color: #333;
   word-break: break-word;
   table-layout: fixed;
   width: 100%;
 }
 th, td {
+  border: 0px;
+  padding: 4px;
+  padding-left: 4px !important;
+}
+table.underlined th, table.underlined td {
   /*border-left: 2px solid #333;
   border-top: 2px solid #333;*/
   border-bottom: 2px solid #333;
-  padding: 4px;
-  padding-left: 4px !important;
+}
+table.link-nav th, table.link-nav td {
+  padding: 5px;
+  text-align: center;
 }
 div.album-art {
   float: right;
@@ -49,4 +64,16 @@ div.album-art {
   padding-bottom: 10px;
   padding-right: 10px;
   padding-top: 10px;
+}
+a:hover {
+  color: #e84f4f !important;
+  border-color: #e84f4f !important;
+}
+a.button {
+  color: #ddd;
+  text-transform: none;
+  text-decoration: none;
+  font-size: 0.7em;
+  border-radius: 0px;
+  border: 1px solid #333;
 }

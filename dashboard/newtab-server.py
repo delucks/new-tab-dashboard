@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, Blueprint
-import shlex
-from subprocess import Popen, PIPE
+import dbus
+import getpass
 import logging
 import urllib2
 import chartkick
@@ -109,50 +109,44 @@ def weather():
 read from spotify's DBUS api
 '''
 def now_playing():
-    #TODO: Rewrite this using pydbus instead of using a Popen() call
-    remove_junk = lambda x: x.split('"')[1]
-    cmd = "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata'"
-    proc = Popen(shlex.split(cmd), stdout=PIPE, stderr=PIPE)
-    stdout, stderr = proc.communicate()
-    strs = [line.strip() for line in stdout.splitlines() if 'string' in line]
-    for idx, item in enumerate(strs):
-        if 'xesam:artist' in item:
-            artist = strs[idx+1]
-        elif 'xesam:album' in item:
-            album = strs[idx+1]
-        elif 'xesam:title' in item:
-            title = strs[idx+1]
-        elif 'mpris:artUrl' in item:
-            art_link = strs[idx+1]
-    return [remove_junk(item) for item in [artist, album, title, art_link]]
-
-'''
-application logic
-'''
+    bus = dbus.SessionBus()
+    player = bus.get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2')
+    properties_manager = dbus.Interface(player, 'org.freedesktop.DBus.Properties')
+    meta = properties_manager.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+    meta['xesam:artist'] = meta['xesam:artist'][0] # remove the unnecessary array
+    return [v for k, v in meta.iteritems() if ('album' in k or 'title' in k or 'artist' in k or 'art' in k)]
 
 def get_settings():
     return {
             "backgroundColor": "#111",
-            "colors": ["#526f33", "#E84F4F", "#9B64FB"],
+            "colors": ["#E84F4F", "#9B64FB", "#526f33"],
             "titleColor": "#fff",
             "borderColor": "#333",
             "axisColor": "#333",
             "axisBackgroundColor": "#333",
+            "fontName": "monospace",
            }
 
+def get_time():
+    curr = datetime.datetime.now()
+    return curr.strftime('%A %b %w at %H:%M:%S')
+
 '''
-this method renders a template of graphs without data
-using chartkick and skeleton.css for frontend
+render the graphs, display all the info!
 '''
 @app.route('/')
 def render_dashboard():
     cpu_info = proc_cpuinfo()
-    print cpu_info
+    cpu_load = proc_load()
     return render_template('index.html',
-            load_data=proc_load(),
+            load_data=cpu_load,
             mem_data=proc_mem(),
             settings=get_settings(),
             music=now_playing(),
+            user=getpass.getuser(),
+            time=get_time(),
+            host=getpass.os.uname()[1],
+            overview = cpu_load[cpu_load.keys()[0]],
             cpu_info=cpu_info)
 
 if (__name__ == '__main__'):
