@@ -1,4 +1,52 @@
 html {
 	font-size: 0.7rem;
-  overflow: hidden;
+  background: #111;
+}
+div.container {
+  padding-top: 30px;
+  width: 90%;
+}
+body {
+  font-family: 'Share Tech Mono', monospace !important;
+}
+h4 {
+  font-size: 1.2em;
+  color: #ddd;
+}
+div.columns {
+  border: 2px solid #333;
+}
+h4.title {
+  padding-left: 10px;
+  padding-top: 3px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid #333;
+  border-right: 2px solid #333;
+}
+div.title-wrapper {
+  width: 200px;
+  display: inline-block;
+}
+table {
+  color: #ddd;
+  border-spacing: 2px;
+  border-color: #333;
+  word-break: break-word;
+  table-layout: fixed;
+  width: 100%;
+}
+th, td {
+  /*border-left: 2px solid #333;
+  border-top: 2px solid #333;*/
+  border-bottom: 2px solid #333;
+  padding: 4px;
+  padding-left: 4px !important;
+}
+div.album-art {
+  float: right;
+  vertical-align: middle;
+  display: inline-block;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  padding-top: 10px;
 }
