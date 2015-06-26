@@ -1,11 +1,16 @@
 from flask import Flask, request, render_template, Blueprint
-import dbus
 import getpass
 import logging
 import urllib2
 import chartkick
 import datetime
 app = Flask(__name__)
+
+try:
+    import dbus
+    APP_WITHOUT_DBUS=False
+except ImportError:
+    APP_WITHOUT_DBUS=True
 
 ck = Blueprint('ck_page', __name__, static_folder=chartkick.js(), static_url_path='/static')
 app.register_blueprint(ck, url_prefix='/ck')
@@ -141,11 +146,15 @@ render the graphs, display all the info!
 def render_dashboard():
     cpu_info = proc_cpuinfo()
     cpu_load = proc_load()
+    if APP_WITHOUT_DBUS:
+        music_info = None # dern platform compat
+    else:
+        music_info = now_playing()
     return render_template('index.html',
             load_data=cpu_load,
             mem_data=proc_mem(),
             settings=get_settings(),
-            music=now_playing(),
+            music=music_info,
             user=getpass.getuser(),
             time=get_time(),
             host=getpass.os.uname()[1],
