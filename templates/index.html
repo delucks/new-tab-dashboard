@@ -61,6 +61,7 @@
       </div>
     </div>
     <div class="row">
+      {% if music %}
       <div class="six columns">
         <div class="album-art">
           <img class="album-art" src="{{ music[3] }}"/>
@@ -89,6 +90,8 @@
             </tbody>
           </table>
       </div>
+      {% endif %}
+      {% if cpu_info %}
       <div class="six columns">
         <div class="title-wrapper">
           <h4 class="title">CPU Information</h4>
@@ -105,29 +108,46 @@
               </tr>
             </thead>
             <tbody>
+              {% if cpu_info.model %}
               <tr>
                 <td>Model</td>
                 <td>{{ cpu_info.model }}</td>
               </tr>
+              {% endif %}
+              {% if cpu_info.name %}
+              <tr>
+                <td>Name</td>
+                <td>{{ cpu_info.name }}</td>
+              </tr>
+              {% endif %}
+              {% if cpu_info.speed %}
               <tr>
                 <td>BogoMIPS</td>
                 <td>{{ cpu_info.speed }} MIPS</td>
               </tr>
+              {% endif %}
+              {% if cpu_info.proc_count %}
               <tr>
                 <td>Processor Count</td>
                 <td>{{ cpu_info.proc_count }} cores</td>
               </tr>
+              {% endif %}
+              {% if cpu_info.cache %}
               <tr>
                 <td>Cache Size</td>
                 <td>{{ cpu_info.cache }}/core</td>
               </tr>
+              {% endif %}
+              {% if cpu_info.address %}
               <tr>
                 <td>Address Sizes</td>
                 <td>{{ cpu_info.address }}</td>
               </tr>
+              {% endif %}
             </tbody>
           </table>
       </div>
+      {% endif %}
     </div>
   </div> <!-- /container -->
 </body>
