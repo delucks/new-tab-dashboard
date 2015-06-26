@@ -110,11 +110,14 @@ read from spotify's DBUS api
 '''
 def now_playing():
     bus = dbus.SessionBus()
-    player = bus.get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2')
-    properties_manager = dbus.Interface(player, 'org.freedesktop.DBus.Properties')
-    meta = properties_manager.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
-    meta['xesam:artist'] = meta['xesam:artist'][0] # remove the unnecessary array
-    return [v for k, v in meta.iteritems() if ('album' in k or 'title' in k or 'artist' in k or 'art' in k)]
+    try:
+        player = bus.get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2')
+        properties_manager = dbus.Interface(player, 'org.freedesktop.DBus.Properties')
+        meta = properties_manager.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+        meta['xesam:artist'] = meta['xesam:artist'][0] # remove the unnecessary array
+        return [v for k, v in meta.iteritems() if ('album' in k or 'title' in k or 'artist' in k or 'art' in k)]
+    except dbus.DBusException:
+        pass
 
 def get_settings():
     return {
