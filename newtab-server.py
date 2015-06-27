@@ -4,6 +4,7 @@ import logging
 import urllib2
 import chartkick
 import datetime
+import ConfigParser
 app = Flask(__name__)
 
 try:
@@ -26,6 +27,11 @@ the base module doesn't display anything
 except holding all the styling and stuff 
 should be room for text boxes
 
+maybe have everything put into render_template, but have some of the methods it calls
+return None
+these None-returning methods would be caught by the template and just not displayed
+but how do we do order?
+
 functionality
     statistics about the machine it's running on
     ability to issue arbitrary shell commands and display the output
@@ -40,6 +46,14 @@ design
 '''
 utility functions
 '''
+
+def parse_config(config_file='newtab-server.cfg'):
+    c = ConfigParser.RawConfigParser()
+    c.read(config_file)
+    for item in c.sections():
+        continue
+        # import the file using __import__()
+        # call its constructor using the size of the column
 
 def gen_nonempty(iterative):
     for item in iterative:
