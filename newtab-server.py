@@ -17,6 +17,15 @@ app.register_blueprint(ck, url_prefix='/ck')
 app.jinja_env.add_extension("chartkick.ext.charts")
 
 '''
+split up each box into it's own "module" that outputs the HTML for it
+have a custom configuration template file that you can read in to generate
+the page
+each method which returns data is totally contained in the module, and they're
+dynamically loaded in order to conserve memory
+the base module doesn't display anything
+except holding all the styling and stuff 
+should be room for text boxes
+
 functionality
     statistics about the machine it's running on
     ability to issue arbitrary shell commands and display the output
