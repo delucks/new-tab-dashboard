@@ -41,14 +41,6 @@ design
 utility functions
 '''
 
-def check_http_resp(url, code):
-    logging.info('utility,check_http_resp,{u}'.format(u=url))
-    try:
-        req = urllib2.urlopen(url)
-        return req.code
-    except Exception:
-        return 404
-
 def gen_nonempty(iterative):
     for item in iterative:
         if item.strip() != '':
@@ -116,9 +108,6 @@ def proc_mem():
                 information['active'] = datum
     return information
 
-def weather():
-    pass
-
 '''
 read from spotify's DBUS api
 '''
@@ -131,7 +120,8 @@ def now_playing():
         meta['xesam:artist'] = meta['xesam:artist'][0] # remove the unnecessary array
         return [v for k, v in meta.iteritems() if ('album' in k or 'title' in k or 'artist' in k or 'art' in k)]
     except dbus.DBusException:
-        pass
+        # returning None will prevent this whole draw element from being displayed
+        return None
 
 def get_settings():
     return {
