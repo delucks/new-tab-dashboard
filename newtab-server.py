@@ -17,7 +17,7 @@ except ImportError:
 app = flask.Flask(__name__)
 ck = flask.Blueprint('ck_page', __name__, static_folder=chartkick.js(), static_url_path='/static')
 app.register_blueprint(ck, url_prefix='/ck')
-app.jinja_env.add_extension("chartkick.ext.charts")
+app.jinja_env.add_extension('chartkick.ext.charts')
 
 '''
 Global Utility Functions
@@ -66,9 +66,9 @@ dictionary that can be merged into the general
 request context for rendering
 '''
 class Column(object):
-    coltype = None
+    template_path = None
 
-    def __init__(self, size):
+    def __init__(self, size='six'):
         self.size = size
 
     def set_size(self, new_size):
@@ -81,7 +81,7 @@ class Column(object):
 read some memory stats from proc. all numbers are in kilobytes
 '''
 class MemoryColumn(Column):
-    coltype = "Memory"
+    template_path = 'memory.html'
 
     def proc_mem(self):
         logging.info('utility,proc_mem')
@@ -113,7 +113,7 @@ class MemoryColumn(Column):
 read /proc/cpuinfo, parse the data into a dict
 '''
 class CPUInfoColumn(Column):
-    coltype = "CPUInfo"
+    template_path = 'cpu.html'
 
     def proc_cpuinfo(self):
         logging.info('utility,proc_cpuinfo')
@@ -144,7 +144,7 @@ class CPUInfoColumn(Column):
 read loadavg from proc
 '''
 class LoadColumn(Column):
-    coltype = "Load"
+    template_path = 'load.html'
 
     def proc_load(self):
         logging.info('utility,proc_load')
@@ -156,13 +156,13 @@ class LoadColumn(Column):
             return {str(now): data[0], str(five): data[1], str(fifteen): data[2]}
 
     def get_data(self):
-        return {'load': self.proc_load()}
+        return {'load_data': self.proc_load()}
 
 '''
 read from spotify's DBUS api
 '''
 class MusicColumn(Column):
-    coltype = "Music"
+    template_path = 'music.html'
 
     def now_playing(self):
         bus = dbus.SessionBus()
@@ -183,7 +183,7 @@ class MusicColumn(Column):
 This is as blank as you can get, a static column
 '''
 class LinksColumn(Column):
-    coltype = "Links"
+    template_path = 'links.html'
 
     def get_data(self):
         return {}
@@ -194,28 +194,29 @@ return a list of Row objects that we can pass off to the
 view
 '''
 def parse_config(config_file='newtab-server.cfg'):
-    #c = ConfigParser.RawConfigParser()
-    #c.read(config_file)
-    #numrows = len(c.sections())
+    c = ConfigParser.RawConfigParser()
+    c.read(config_file)
     rows = []
-    m = MemoryColumn(size="six")
-    l = LinksColumn(size="six")
-    r1 = Row([m, l])
-    l = LoadColumn(size="twelve")
-    rows.append(r1)
-    r2 = Row([l])
-    rows.append(r2)
-    s = MusicColumn(size="six")
-    l = LinksColumn(size="six")
-    r3 = Row([l, s])
-    rows.append(r3)
-    #for row_name in c.sections():
-    #    for col_name in c.options(row_name):
-    #        opt = c.get(row_name, col_name)
-    #        mod = importlib.import_module(opt.split(',')[-1])
-    #        row = mod.Row()
-    #        rows.append(row)
-    #return numrows
+    # TODO error handling for malformed config
+    for row in c.sections():
+        mods = []
+        for config_entry in c.options(row):
+            mod_name = c.get(row, config_entry).lower()
+            m = None
+            if mod_name == 'memory':
+                m = MemoryColumn()
+            elif mod_name == 'load':
+                m = LoadColumn()
+            elif mod_name == 'music':
+                m = MusicColumn()
+            elif mod_name == 'cpu':
+                m = CPUInfoColumn()
+            else: #mod_name == 'links':
+                m = LinksColumn()
+            mods.append(m)
+        r = Row(mods)
+        r.change_column_width()
+        rows.append(r)
     return rows
 
 def get_settings():
@@ -246,7 +247,6 @@ def render_dashboard():
             'host': getpass.os.uname()[1],
             }
     for row in rows:
-        # for item in columns:
         for column in row.columns:
             # call item's get_data() method, which returns a dict like {'mem_data': {}}
             col_data = column.get_data()
