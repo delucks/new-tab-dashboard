@@ -5,6 +5,7 @@
     {% for col in row.columns %}
       <div class="{{ col.size }} columns">
       {% if col.coltype == "Memory" %}
+      <!-- TODO: These include statements could totally be dynamic and load the filename from the col class -->
         {% include "memory.html" %}
       {% elif col.coltype == "Links" %}
         {% include "links.html" %}
