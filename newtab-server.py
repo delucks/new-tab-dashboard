@@ -1,11 +1,12 @@
-from flask import Flask, request, render_template, Blueprint
+import flask
 import getpass
 import logging
 import urllib2
 import chartkick
+import importlib
 import datetime
 import ConfigParser
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 try:
     import dbus
@@ -13,47 +14,100 @@ try:
 except ImportError:
     APP_WITHOUT_DBUS=True
 
-ck = Blueprint('ck_page', __name__, static_folder=chartkick.js(), static_url_path='/static')
+ck = flask.Blueprint('ck_page', __name__, static_folder=chartkick.js(), static_url_path='/static')
 app.register_blueprint(ck, url_prefix='/ck')
 app.jinja_env.add_extension("chartkick.ext.charts")
 
 '''
-split up each box into it's own "module" that outputs the HTML for it
-have a custom configuration template file that you can read in to generate
-the page
-each method which returns data is totally contained in the module, and they're
-dynamically loaded in order to conserve memory
-the base module doesn't display anything
-except holding all the styling and stuff 
-should be room for text boxes
-
-maybe have everything put into render_template, but have some of the methods it calls
-return None
-these None-returning methods would be caught by the template and just not displayed
-but how do we do order?
-
-functionality
-    statistics about the machine it's running on
-    ability to issue arbitrary shell commands and display the output
-    generalized statistics like ping to a site, your server load, etc
-    fuzzy search of bookmarks
-design
-    simple white or grey background, colorful graphs
-    some kind of a JS graphing library for the frontend
-    read most of the info directly off proc so it's fast
+holds 1+ Column objects
+defines a method to autocalculate column
+widths and runs it before passing the columns on
 '''
+class Row(object):
+    def __init__(self, num_columns, columns):
+        self.num_columns = num_columns
+        self.columns = columns
+
+    def calculate_column_width(self):
+        pass
 
 '''
-utility functions
+Base class for all Columns
+defines a method get_data() which returns a 
+dictionary that can be merged into the general
+request context for rendering
 '''
+class Column(object):
+    coltype = None
 
+    def __init__(self, size):
+        self.size = size
+
+    def get_data(self):
+        raise NotImplementedError('Must subclass Column!')
+
+'''
+read some memory stats from proc. all numbers are in kilobytes
+'''
+class MemoryColumn(Column):
+    coltype = "Memory"
+
+    def proc_mem(self):
+        logging.info('utility,proc_mem')
+        with open('/proc/meminfo', 'r') as info:
+            information = {}
+            for memstat in gen_nonempty(info.readlines()):
+                sep = [i.strip() for i in memstat.split(':')]
+                cat = sep[0]
+                datum = sep[1].rstrip(' kB')
+                #if cat == 'MemTotal':
+                #    information['total'] = datum
+                if cat == 'MemFree':
+                    information['free'] = datum
+                #elif cat == 'Buffers':
+                #    information['buffers'] = datum
+                elif cat == 'Cached':
+                    information['cache'] = datum
+                #elif cat == 'SwapCached':
+                #    information['swap'] = datum
+                elif cat == 'Active':
+                    information['active'] = datum
+        return information
+
+    def get_data(self):
+        return {'mem_data': self.proc_mem()}
+
+'''
+This is as blank as you can get, a static column
+'''
+class LinksColumn(Column):
+    coltype = "Links"
+
+    def get_data(self):
+        return {}
+
+'''
+Read the config file, create Row objects for everything
+return a list of Row objects that we can pass off to the
+view
+'''
 def parse_config(config_file='newtab-server.cfg'):
-    c = ConfigParser.RawConfigParser()
-    c.read(config_file)
-    for item in c.sections():
-        continue
-        # import the file using __import__()
-        # call its constructor using the size of the column
+    #c = ConfigParser.RawConfigParser()
+    #c.read(config_file)
+    #numrows = len(c.sections())
+    rows = []
+    m = MemoryColumn(size="six")
+    l = LinksColumn(size="six")
+    r1 = Row(2, [m, l])
+    rows.append(r1)
+    #for row_name in c.sections():
+    #    for col_name in c.options(row_name):
+    #        opt = c.get(row_name, col_name)
+    #        mod = importlib.import_module(opt.split(',')[-1])
+    #        row = mod.Row()
+    #        rows.append(row)
+    #return numrows
+    return rows
 
 def gen_nonempty(iterative):
     for item in iterative:
@@ -98,31 +152,6 @@ def proc_load():
         return {str(now): data[0], str(five): data[1], str(fifteen): data[2]}
 
 '''
-read some memory stats from proc. all numbers are in kilobytes
-'''
-def proc_mem():
-    logging.info('utility,proc_mem')
-    with open('/proc/meminfo', 'r') as info:
-        information = {}
-        for memstat in gen_nonempty(info.readlines()):
-            sep = [i.strip() for i in memstat.split(':')]
-            cat = sep[0]
-            datum = sep[1].rstrip(' kB')
-            #if cat == 'MemTotal':
-            #    information['total'] = datum
-            if cat == 'MemFree':
-                information['free'] = datum
-            #elif cat == 'Buffers':
-            #    information['buffers'] = datum
-            elif cat == 'Cached':
-                information['cache'] = datum
-            #elif cat == 'SwapCached':
-            #    information['swap'] = datum
-            elif cat == 'Active':
-                information['active'] = datum
-    return information
-
-'''
 read from spotify's DBUS api
 '''
 def now_playing():
@@ -157,22 +186,27 @@ render the graphs, display all the info!
 '''
 @app.route('/')
 def render_dashboard():
-    cpu_info = proc_cpuinfo()
-    cpu_load = proc_load()
-    if APP_WITHOUT_DBUS:
-        music_info = None # dern platform compat
-    else:
-        music_info = now_playing()
-    return render_template('index.html',
-            load_data=cpu_load,
-            mem_data=proc_mem(),
-            settings=get_settings(),
-            music=music_info,
-            user=getpass.getuser(),
-            time=get_time(),
-            host=getpass.os.uname()[1],
-            overview = cpu_load[cpu_load.keys()[0]],
-            cpu_info=cpu_info)
+    rows = flask.g.get('rows', None)
+    context = {'rows': rows,
+            'settings': get_settings(),
+            'user': getpass.getuser(),
+            'time': get_time(),
+            'host': getpass.os.uname()[1],
+            }
+    for row in rows:
+        # for item in columns:
+        for column in row.columns:
+            # call item's get_data() method, which returns a dict like {'mem_data': {}}
+            col_data = column.get_data()
+            # merge its dict into context
+            context.update(col_data)
+    return flask.render_template('dynamic.html', **context)
+
+#TODO: Find a way for this to happen on the first app load and persist the objects
+@app.before_request
+def get_rows():
+    rows = parse_config()
+    flask.g.rows = rows
 
 if (__name__ == '__main__'):
     import argparse
@@ -180,5 +214,5 @@ if (__name__ == '__main__'):
     p.add_argument('-b', '--bind-host', help='set the host to run on', default='127.0.0.1')
     p.add_argument('-p', '--port', help='set the port to run on', type=int, default=9001)
     args = p.parse_args()
-    #logging.basicConfig(level=logging.INFO, filename='debug.log')
+    # this should hopefully allow us to bind rows to the global 'g'
     app.run(host=args.bind_host, debug=True, port=args.port)

@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block content %}
+  {% for row in rows %}
+    <div class="row">
+    {% for col in row.columns %}
+      <div class="{{ col.size }} columns">
+      {% if col.coltype == "Memory" %}
+        {% include "memory.html" %}
+      {% elif col.coltype == "Links" %}
+        {% include "links.html" %}
+      {% elif col.coltype == "Load" %}
+        {% include "load.html" %}
+      {% elif col.coltype == "Music" %}
+        {% include "music.html" %}
+      {% else %}
+        {% include "placeholder.html" %}
+      {% endif %}
+      </div> <!-- end column -->
+    {% endfor %}
+    </div> <!-- end row -->
+  {% endfor %}
+{% endblock content %}

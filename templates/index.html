@@ -13,10 +13,14 @@
 </head>
 <body>
   <div class="container">
+    {% block header %}
     <div class="row">
       <h1>Welcome {{ user }}</h1>
       <h4>You're using your "{{ host }}" deck. On pageload, it was {{ time }}</h4>
       <h4>Current load avg: {{ overview }}</h4>
+    </div>
+    {% endblock header %}
+    {% block content %}
     <div class="row">
       <div class="six columns">
         <div class="title-wrapper">
@@ -155,6 +159,7 @@
       </div>
       {% endif %}
     </div>
+    {% endblock content %}
   </div> <!-- /container -->
 </body>
 </html>
