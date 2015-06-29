@@ -84,7 +84,7 @@ class MemoryColumn(Column):
     template_path = 'memory.html'
 
     def proc_mem(self):
-        logging.info('utility,proc_mem')
+        app.logger.info('MemoryColumn reading proc')
         with open('/proc/meminfo', 'r') as info:
             information = {}
             for memstat in gen_nonempty(info.readlines()):
@@ -116,7 +116,7 @@ class CPUInfoColumn(Column):
     template_path = 'cpu.html'
 
     def proc_cpuinfo(self):
-        logging.info('utility,proc_cpuinfo')
+        app.logger.info('CPUInfoColumn reading proc')
         with open('/proc/cpuinfo', 'r') as info:
             information = {'proc_count': 0}
             for entry in gen_nonempty(info.readlines()):
@@ -147,7 +147,7 @@ class LoadColumn(Column):
     template_path = 'load.html'
 
     def proc_load(self):
-        logging.info('utility,proc_load')
+        app.logger.info('LoadColumn reading proc')
         with open('/proc/loadavg', 'r') as info:
             data = info.read().split()
             now = datetime.datetime.now()
@@ -165,6 +165,7 @@ class MusicColumn(Column):
     template_path = 'music.html'
 
     def now_playing(self):
+        app.logger.info('MusicColumn reading dbus')
         bus = dbus.SessionBus()
         try:
             player = bus.get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2')
@@ -174,6 +175,8 @@ class MusicColumn(Column):
             return [v for k, v in meta.iteritems() if ('album' in k or 'title' in k or 'artist' in k or 'art' in k)]
         except dbus.DBusException:
             # returning None will prevent this whole draw element from being displayed
+            app.logger.error('Hit a DBusException')
+            raise
             return None
 
     def get_data(self):
@@ -194,6 +197,7 @@ return a list of Row objects that we can pass off to the
 view
 '''
 def parse_config(config_file='newtab-server.cfg'):
+    app.logger.info('Reading config file {}'.format(config_file))
     c = ConfigParser.RawConfigParser()
     c.read(config_file)
     rows = []
@@ -208,6 +212,8 @@ def parse_config(config_file='newtab-server.cfg'):
             elif mod_name == 'load':
                 m = LoadColumn()
             elif mod_name == 'music':
+                if APP_WITHOUT_DBUS:
+                    continue
                 m = MusicColumn()
             elif mod_name == 'cpu':
                 m = CPUInfoColumn()
@@ -266,6 +272,8 @@ if (__name__ == '__main__'):
     p.add_argument('-b', '--bind-host', help='set the host to run on', default='127.0.0.1')
     p.add_argument('-p', '--port', help='set the port to run on', type=int, default=9001)
     p.add_argument('-c', '--configfile', help='specify an alternate config file', default='newtab.cfg')
+    p.add_argument('-d', '--debug', help='enable debugging output', action='store_true')
     args = p.parse_args()
     # initialize the application
-    app.run(host=args.bind_host, debug=True, port=args.port)
+    app.logger.info('Starting application')
+    app.run(host=args.bind_host, debug=args.debug, port=args.port)
