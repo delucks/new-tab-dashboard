@@ -7,6 +7,7 @@ import chartkick
 import importlib
 import datetime
 import ConfigParser
+from socket import gethostname
 
 try:
     import dbus
@@ -105,8 +106,36 @@ class MemoryColumn(Column):
                     information['active'] = datum
         return information
 
+    def win_mem(self):
+        import ctypes
+        class MemStatStruct(ctypes.Structure):
+            _fields_ = [('dwLength', ctypes.c_ulong),
+                        ('dwMemoryLoad', ctypes.c_ulong),
+                        ('ullTotalPhys', ctypes.c_ulonglong),
+                        ('ullAvailPhys', ctypes.c_ulonglong),
+                        ('ullTotalPageFile', ctypes.c_ulonglong),
+                        ('ullAvailPageFile', ctypes.c_ulonglong),
+                        ('ullTotalVirtual', ctypes.c_ulonglong),
+                        ('ullAvailVirtual', ctypes.c_ulonglong),
+                        ('sullAvailExtendedVirtual', ctypes.c_ulonglong)]
+
+            def __init__(self):
+                self.dwLength = ctypes.sizeof(self)
+                super(MemStatStruct, self).__init__()
+
+        struct = MemStatStruct()
+        ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(struct))
+        free = struct.ullAvailPhys
+        active = struct.ullTotalPhys - free
+        free = int(free / 1024)
+        active = int(active / 1024)
+        return {'free': free, 'active': active}
+
     def get_data(self):
-        return {'mem_data': self.proc_mem()}
+        if getpass.os.name == 'nt':
+            return {'mem_data': self.win_mem()}
+        else:
+            return {'mem_data': self.proc_mem()}
 
 
 '''
@@ -238,7 +267,7 @@ def get_settings():
 
 def get_time():
     curr = datetime.datetime.now()
-    return curr.strftime('%A %b %w at %H:%M:%S')
+    return curr.strftime('%A %b %d at %H:%M:%S')
 
 '''
 render the graphs, display all the info!
@@ -250,7 +279,7 @@ def render_dashboard():
             'settings': get_settings(),
             'user': getpass.getuser(),
             'time': get_time(),
-            'host': getpass.os.uname()[1],
+            'host': gethostname(),
             }
     for row in rows:
         for column in row.columns:
