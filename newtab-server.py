@@ -6,9 +6,15 @@ import chartkick
 import ConfigParser
 from socket import gethostname
 
+# attempt to import dbus and connect to spotify
 try:
     import dbus
     APP_WITHOUT_DBUS=False
+    try:
+        bus = dbus.SystemBus()
+        player = bus.get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2')
+    except dbus.DBusException:
+        APP_WITHOUT_DBUS=True
 except ImportError:
     APP_WITHOUT_DBUS=True
 

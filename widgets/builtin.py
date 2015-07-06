@@ -147,13 +147,10 @@ class LoadColumn(Column):
 read from spotify's DBUS api
 '''
 class MusicColumn(Column):
-    try:
-        import dbus
-    except ImportError:
-        pass
     template_path = 'music.html'
 
     def now_playing(self):
+        import dbus
         FLASK_LOGGER.info('MusicColumn reading dbus')
         bus = dbus.SessionBus()
         try:
@@ -164,7 +161,7 @@ class MusicColumn(Column):
             return [v for k, v in meta.iteritems() if ('album' in k or 'title' in k or 'artist' in k or 'art' in k)]
         except dbus.DBusException:
             # returning None will prevent this whole draw element from being displayed
-            FLASK_LOGGER.error('Hit a DBusException')
+            FLASK_LOGGER.error('Hit an unexpected DBusException')
             raise
             return None
 
@@ -179,5 +176,3 @@ class LinksColumn(Column):
 
     def get_data(self):
         return {}
-
-
